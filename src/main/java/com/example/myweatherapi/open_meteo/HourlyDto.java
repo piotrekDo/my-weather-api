@@ -19,7 +19,8 @@ public class HourlyDto {
     public static HourlyDto mapHourlyToDto(Hourly hourly) {
         Map<LocalDateTime, HourlyValuesDto> values = new LinkedHashMap<>();
         for (int i = 0; i < hourly.getTime().length; i++) {
-            values.put(LocalDateTime.parse(hourly.getTime()[i]),
+            values.put(
+                    LocalDateTime.parse(hourly.getTime()[i]),
                     new HourlyValuesDto(
                             hourly.getTemperature_2m()[i],
                             hourly.getRain()[i],
