@@ -1,7 +1,16 @@
 package com.example.myweatherapi.open_meteo;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.util.Arrays;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 class Hourly {
     private String[] time;
     private double[] temperature_2m;
@@ -12,9 +21,6 @@ class Hourly {
     private int[] visibility;
     private double[] windspeed_10m;
     private int[] winddirection_10m;
-
-     Hourly() {
-    }
 
     @Override
     public String toString() {
@@ -31,75 +37,4 @@ class Hourly {
                 '}';
     }
 
-    public String[] getTime() {
-        return time;
-    }
-
-    public void setTime(String[] time) {
-        this.time = time;
-    }
-
-    public double[] getTemperature_2m() {
-        return temperature_2m;
-    }
-
-    public void setTemperature_2m(double[] temperature_2m) {
-        this.temperature_2m = temperature_2m;
-    }
-
-    public double[] getRain() {
-        return rain;
-    }
-
-    public void setRain(double[] rain) {
-        this.rain = rain;
-    }
-
-    public double[] getSnowfall() {
-        return snowfall;
-    }
-
-    public void setSnowfall(double[] snowfall) {
-        this.snowfall = snowfall;
-    }
-
-    public int[] getWeathercode() {
-        return weathercode;
-    }
-
-    public void setWeathercode(int[] weathercode) {
-        this.weathercode = weathercode;
-    }
-
-    public double[] getSurface_pressure() {
-        return surface_pressure;
-    }
-
-    public void setSurface_pressure(double[] surface_pressure) {
-        this.surface_pressure = surface_pressure;
-    }
-
-    public int[] getVisibility() {
-        return visibility;
-    }
-
-    public void setVisibility(int[] visibility) {
-        this.visibility = visibility;
-    }
-
-    public double[] getWindspeed_10m() {
-        return windspeed_10m;
-    }
-
-    public void setWindspeed_10m(double[] windspeed_10m) {
-        this.windspeed_10m = windspeed_10m;
-    }
-
-    public int[] getWinddirection_10m() {
-        return winddirection_10m;
-    }
-
-    public void setWinddirection_10m(int[] winddirection_10m) {
-        this.winddirection_10m = winddirection_10m;
-    }
 }
