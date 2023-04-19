@@ -1,6 +1,5 @@
 package com.example.myweatherapi.open_meteo;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,7 +13,7 @@ public class OpenMeteoService {
         return String.format("latitude=%s&longitude=%s&current_weather=true", latValue, lonValue);
     }
 
-    String getHourlyForecast(boolean temperature, boolean rain, boolean snowfall, boolean weathercode, boolean pressure, boolean visibility, boolean windSpeed, boolean windDirection) {
+    String getHourlyForecastUrl(boolean temperature, boolean rain, boolean snowfall, boolean weathercode, boolean pressure, boolean visibility, boolean windSpeed, boolean windDirection) {
         String base = "&hourly=";
         if (temperature) base += "temperature_2m,";
         if (rain) base += "rain,";
@@ -28,7 +27,7 @@ public class OpenMeteoService {
         return base.substring(0, base.length() - 1);
     }
 
-    String getDailyWeather(boolean temperatureMax, boolean temperatureMin, boolean sunrise, boolean sunset) {
+    String getDailyWeatherUrl(boolean temperatureMax, boolean temperatureMin, boolean sunrise, boolean sunset) {
         ;
         String base = "&daily=";
         if (temperatureMax) base += "temperature_2m_max,";

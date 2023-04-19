@@ -12,6 +12,7 @@ import java.util.Objects;
 public class OpenMeteoResponseDto {
     private double latitude;
     private double longitude;
+    private String display_name;
     private String timezone;
     private CurrentWeather current_weather;
     private HourlyUnits hourly_units;
@@ -30,6 +31,31 @@ public class OpenMeteoResponseDto {
                 model.getDaily_units(),
                 DailyDto.mapDailyToDto(model.getDaily())
         );
+    }
+
+    public static OpenMeteoResponseDto mapOpenMeteoResponseToDto(OpenMeteoResponseModel model, String display_name) {
+        return new OpenMeteoResponseDto(
+                model.getLatitude(),
+                model.getLongitude(),
+                display_name,
+                model.getTimezone(),
+                model.getCurrent_weather(),
+                model.getHourly_units(),
+                HourlyDto.mapHourlyToDto(model.getHourly()),
+                model.getDaily_units(),
+                DailyDto.mapDailyToDto(model.getDaily())
+        );
+    }
+
+    public OpenMeteoResponseDto(double latitude, double longitude, String timezone, CurrentWeather current_weather, HourlyUnits hourly_units, HourlyDto hourly, DailyUnits daily_units, DailyDto daily) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.timezone = timezone;
+        this.current_weather = current_weather;
+        this.hourly_units = hourly_units;
+        this.hourly = hourly;
+        this.daily_units = daily_units;
+        this.daily = daily;
     }
 
     @Override
