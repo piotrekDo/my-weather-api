@@ -1,5 +1,6 @@
 package com.example.myweatherapi.forecast;
 
+import com.example.myweatherapi.error.CityNotFoundException;
 import com.example.myweatherapi.geocode.GeoModel;
 import com.example.myweatherapi.geocode.GeoService;
 import com.example.myweatherapi.open_meteo.OpenMeteoResponseDto;
@@ -24,7 +25,15 @@ public class ForecastService {
 
     GeoModel getCoordinatesByCityName(String city) {
         String url = geoService.getUrlByCityName(city);
-        return restTemplate.getForObject(url, GeoModel[].class)[0];
+        GeoModel geoModel;
+
+        try{
+            geoModel = restTemplate.getForObject(url, GeoModel[].class)[0];
+        }catch (Exception e) {
+            throw new CityNotFoundException("No such city or address");
+        }
+
+        return geoModel;
     }
 
     OpenMeteoResponseDto getForecast(Double lat, Double lon, String start, String end) {
