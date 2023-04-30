@@ -21,7 +21,6 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-
     public AuthenticationResponse register(RegisterRequest request) {
 
         AppUser newAppUser = new AppUser(
@@ -34,7 +33,6 @@ public class AuthenticationService {
 
         AppUser savedUser = appUserRepository.save(newAppUser);
         String token = jwtService.generateToken(new UserDetailsAdapter(savedUser));
-
         return new AuthenticationResponse(
                 savedUser.getFirstName(),
                 appUserService.getUserRoleNames(savedUser.getUserRoles()),

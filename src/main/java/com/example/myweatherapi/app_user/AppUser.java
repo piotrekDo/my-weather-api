@@ -11,6 +11,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @Entity
 @Table(name = "app_users")
+@ToString
 public class AppUser {
 
     @Id
@@ -22,6 +23,7 @@ public class AppUser {
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> userRoles = new ArrayList<>();
+    private String currentToken;
 
     public AppUser(String firstName, String lastName, String email, String password, Collection<Role> userRoles) {
         this.firstName = firstName;

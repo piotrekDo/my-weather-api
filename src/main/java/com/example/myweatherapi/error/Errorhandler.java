@@ -27,4 +27,13 @@ public class Errorhandler {
         );
     }
 
+    @ExceptionHandler(ResourceForbiddenException.class)
+    ResponseEntity<ErrorEntity<String>> handleResourceForbiddenException(ResourceForbiddenException e) {
+        return new ResponseEntity<>(new ErrorEntity<>(
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                e.getMessage()), HttpStatus.NOT_FOUND
+        );
+    }
+
 }

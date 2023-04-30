@@ -1,5 +1,6 @@
 package com.example.myweatherapi.app_user;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,6 +32,11 @@ public class AppUserService implements UserDetailsService {
         AppUser appUser = appUserRepository.findByEmail(username)
                 .orElseThrow(() -> new NoSuchElementException("No user found with email " + username));
         return new UserDetailsAdapter(appUser);
+    }
+
+    public AppUser loadAppUserByUsername(String username) {
+       return appUserRepository.findByEmail(username)
+               .orElseThrow(() -> new NoSuchElementException("No user found with email " + username));
     }
 
     public List<Role> getAvailableRoles() {
