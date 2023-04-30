@@ -2,6 +2,7 @@ package com.example.myweatherapi.auth;
 
 import com.example.myweatherapi.app_user.*;
 import com.example.myweatherapi.error.IllegalOperationException;
+import com.example.myweatherapi.mailing.EmailComposer;
 import com.example.myweatherapi.security.EncryptionConfiguration;
 import com.example.myweatherapi.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class AuthenticationService {
     private final EncryptionConfiguration encryptionConfiguration;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailComposer emailComposer;
 
     public AuthenticationResponse register(RegisterRequest request) {
 
@@ -38,6 +41,8 @@ public class AuthenticationService {
 
         AppUser savedUser = appUserRepository.save(newAppUser);
         String token = jwtService.generateToken(new UserDetailsAdapter(savedUser));
+        CompletableFuture.runAsync(() -> emailComposer.sendRegistrationMessage(request));
+
         return new AuthenticationResponse(
                 savedUser.getFirstName(),
                 appUserService.getUserRoleNames(savedUser.getUserRoles()),
@@ -51,13 +56,15 @@ public class AuthenticationService {
         try {
             authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         } catch (Exception e) {
-//            return AuthenticationResponse.builder().token(e.getLocalizedMessage()).build();
+            e.printStackTrace();
+            throw new IllegalOperationException("Bad Credentials");
         }
+
 
         AppUser appUser = appUserRepository.findByEmail(request.getEmail()).orElseThrow();
         String token = jwtService.generateToken(new UserDetailsAdapter(appUser));
-        appUser.setCurrentToken(encryptionConfiguration.passwordEncoder().encode(token));
-        appUserRepository.save(appUser);
+//        appUser.setCurrentToken(encryptionConfiguration.passwordEncoder().encode(token));
+//        appUserRepository.save(appUser);
         return new AuthenticationResponse(
                 appUser.getFirstName(),
                 appUserService.getUserRoleNames(appUser.getUserRoles()),

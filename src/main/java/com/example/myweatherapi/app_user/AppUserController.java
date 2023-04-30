@@ -1,10 +1,7 @@
 package com.example.myweatherapi.app_user;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -13,7 +10,17 @@ public class AppUserController {
 
     private final AppUserService appUserService;
 
-    @PostMapping("admin/promote")
+    @PostMapping("/request-reset-password")
+    MessageDTO requestResetPassword(@RequestParam String mail) {
+        return appUserService.requestPasswordReset(mail);
+    }
+
+    @PostMapping("/reset-password")
+    MessageDTO resetPassword(@RequestBody ResetPasswordDTO request){
+        return appUserService.resetUserPassword(request);
+    }
+
+    @PostMapping("/admin/promote")
     UserRoleChangeResponse promoteUser(@RequestBody UserRoleChangeRequest request) {
         return appUserService.promoteUser(request);
     }
