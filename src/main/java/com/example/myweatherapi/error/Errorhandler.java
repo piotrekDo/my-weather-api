@@ -18,6 +18,13 @@ public class Errorhandler {
         );
     }
 
+    @ExceptionHandler(value = IllegalOperationException.class)
+    ResponseEntity<ErrorEntity<String>> handleIllegalOperationException(IllegalOperationException e) {
+        return new ResponseEntity<>(new ErrorEntity<>(HttpStatus.BAD_REQUEST.value(),
+                HttpStatus.BAD_REQUEST.getReasonPhrase(),
+                e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(ExpiredJwtException.class)
     ResponseEntity<ErrorEntity<String>> handleExpiredJwtException(ExpiredJwtException e) {
         return new ResponseEntity<>(new ErrorEntity<>(

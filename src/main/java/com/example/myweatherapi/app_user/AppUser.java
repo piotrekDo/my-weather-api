@@ -12,6 +12,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "app_users")
 @ToString
+@EqualsAndHashCode
 public class AppUser {
 
     @Id

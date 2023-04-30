@@ -1,5 +1,6 @@
 package com.example.myweatherapi.app_user;
 
+import com.example.myweatherapi.error.IllegalOperationException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -53,5 +54,45 @@ public class AppUserService implements UserDetailsService {
 
     public String[] getUserRoleNames(Collection<Role> roles) {
        return roles.stream().map(Role::getRoleName).toArray(String[]::new);
+    }
+
+    public UserRoleChangeResponse promoteUser(UserRoleChangeRequest request) {
+        AppUser appUser = appUserRepository.findByEmail(request.getUser()).orElseThrow(() ->
+                new NoSuchElementException("No user found with email address " + request.getUser()));
+        Role requestedRole = getAvailableRoles().stream().filter(role -> role.getRoleName().equalsIgnoreCase(request.getRole()))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No user role found with name " + request.getRole()));
+
+        boolean alreadyContains = appUser.getUserRoles().contains(requestedRole);
+        if (alreadyContains) throw new IllegalOperationException(String.format("%s already has %s role", appUser.getEmail(), requestedRole.getRoleName()));
+
+        appUser.getUserRoles().add(requestedRole);
+        appUserRepository.save(appUser);
+        return new UserRoleChangeResponse(
+                appUser.getEmail(),
+                getUserRoleNames(appUser.getUserRoles())
+        );
+    }
+
+    public UserRoleChangeResponse revokeUserRole(UserRoleChangeRequest request) {
+        if (request.getRole().equalsIgnoreCase("user")) {
+            throw new IllegalOperationException("User is the default role and cannot be revoked from any user.");
+        }
+
+        AppUser appUser = appUserRepository.findByEmail(request.getUser()).orElseThrow(() ->
+                new NoSuchElementException("No user found with email address " + request.getUser()));
+        Role requestedRole = getAvailableRoles().stream().filter(role -> role.getRoleName().equalsIgnoreCase(request.getRole()))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No user role found with name " + request.getRole()));
+
+        boolean hasRole = appUser.getUserRoles().contains(requestedRole);
+        if (!hasRole) throw new IllegalOperationException(String.format("User with email address %s doesn't have %s role", request.getUser(), requestedRole.getRoleName()));
+
+        appUser.getUserRoles().remove(requestedRole);
+        appUserRepository.save(appUser);
+        return new UserRoleChangeResponse(
+                appUser.getEmail(),
+                getUserRoleNames(appUser.getUserRoles())
+        );
     }
 }

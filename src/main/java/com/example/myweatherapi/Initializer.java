@@ -23,10 +23,12 @@ public class Initializer {
     public void run() {
 
         Role user = roleRepository.save(new Role("USER"));
+        Role moderator = roleRepository.save(new Role("MODERATOR"));
         Role admin = roleRepository.save(new Role("ADMIN"));
 
         String pass = encryptionConfiguration.passwordEncoder().encode("pass");
-        AppUser user1 = appUserRepository.save(new AppUser("pioter", "pioter", "pioter@test.com", pass, List.of(user)));
+        AppUser user1 = appUserRepository.save(new AppUser("pioter", "pioter", "pioter@test.com", pass, List.of(user, moderator, admin)));
+        AppUser user2 = appUserRepository.save(new AppUser("Typical", "User", "typical@test.com", pass, List.of(user)));
 
     }
 }

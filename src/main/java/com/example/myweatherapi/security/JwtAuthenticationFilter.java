@@ -1,7 +1,9 @@
 package com.example.myweatherapi.security;
 
 
+import com.example.myweatherapi.app_user.AppUser;
 import com.example.myweatherapi.app_user.AppUserService;
+import com.example.myweatherapi.app_user.UserDetailsAdapter;
 import com.example.myweatherapi.error.ErrorEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.security.SignatureException;
@@ -14,6 +16,7 @@ import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -28,7 +31,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final AppUserService userDetailsService;
+    private final AppUserService appUserService;
+    private final EncryptionConfiguration encoder;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -57,7 +61,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            AppUser appUser = appUserService.loadAppUserByUsername(username);
+            UserDetailsAdapter userDetails = new UserDetailsAdapter(appUser);
+
+//            boolean tokenMatches = encoder.passwordEncoder().matches(jwt, appUser.getCurrentToken());
+//            System.err.println(tokenMatches);
+//            if (!tokenMatches) {
+//                System.out.println("Zly token");
+//                return;
+//            }
+
+
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

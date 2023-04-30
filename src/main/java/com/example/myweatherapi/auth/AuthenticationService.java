@@ -1,6 +1,7 @@
 package com.example.myweatherapi.auth;
 
 import com.example.myweatherapi.app_user.*;
+import com.example.myweatherapi.error.IllegalOperationException;
 import com.example.myweatherapi.security.EncryptionConfiguration;
 import com.example.myweatherapi.security.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,10 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
+
+        appUserRepository.findByEmail(request.getEmail()).ifPresent(user -> {
+            throw new IllegalOperationException("Another user already exists with email address " + user.getEmail());
+        });
 
         AppUser newAppUser = new AppUser(
                 request.getFirstName(),
@@ -51,6 +56,8 @@ public class AuthenticationService {
 
         AppUser appUser = appUserRepository.findByEmail(request.getEmail()).orElseThrow();
         String token = jwtService.generateToken(new UserDetailsAdapter(appUser));
+        appUser.setCurrentToken(encryptionConfiguration.passwordEncoder().encode(token));
+        appUserRepository.save(appUser);
         return new AuthenticationResponse(
                 appUser.getFirstName(),
                 appUserService.getUserRoleNames(appUser.getUserRoles()),
