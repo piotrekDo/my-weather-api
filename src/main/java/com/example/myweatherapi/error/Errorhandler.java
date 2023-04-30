@@ -1,5 +1,6 @@
 package com.example.myweatherapi.error;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -16,4 +17,14 @@ public class Errorhandler {
                 e.getMessage()), HttpStatus.NOT_FOUND
         );
     }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    ResponseEntity<ErrorEntity<String>> handleExpiredJwtException(ExpiredJwtException e) {
+        return new ResponseEntity<>(new ErrorEntity<>(
+                HttpStatus.FORBIDDEN.value(),
+                HttpStatus.FORBIDDEN.getReasonPhrase(),
+                e.getMessage()), HttpStatus.NOT_FOUND
+        );
+    }
+
 }
