@@ -22,17 +22,15 @@ public class AppUserService implements UserDetailsService {
     private final List<Role> appUserAvailableRoles;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final EncryptionConfiguration encryptionConfiguration;
-//    private final Role defaultUserRole;
+    private final UserRolesHistoryViewRepository userRolesHistoryViewRepository;
 
-    public AppUserService(AppUserRepository appUserRepository, RoleRepository roleRepository, PasswordResetTokenRepository passwordResetTokenRepository, EncryptionConfiguration encryptionConfiguration) {
+    public AppUserService(AppUserRepository appUserRepository, RoleRepository roleRepository, PasswordResetTokenRepository passwordResetTokenRepository, EncryptionConfiguration encryptionConfiguration, UserRolesHistoryViewRepository userRolesHistoryViewRepository) {
         this.appUserRepository = appUserRepository;
         this.roleRepository = roleRepository;
         this.appUserAvailableRoles = roleRepository.findAll();
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.encryptionConfiguration = encryptionConfiguration;
-//        this.defaultUserRole = appUserAvailableRoles.stream()
-//                .filter(role -> role.getRoleName().equals("USER"))
-//                .findFirst().orElseThrow(() -> new NoSuchElementException("No default user role found"));
+        this.userRolesHistoryViewRepository = userRolesHistoryViewRepository;
     }
 
     @Override
@@ -61,6 +59,14 @@ public class AppUserService implements UserDetailsService {
 
     public String[] getUserRoleNames(Collection<Role> roles) {
        return roles.stream().map(Role::getRoleName).toArray(String[]::new);
+    }
+
+    List<UserRolesHistoryView> getUserRolesHistoryByEmail(String userEmail) {
+        return userRolesHistoryViewRepository.findAllByUserEmail(userEmail);
+    }
+
+    List<UserRolesHistoryView> getUsersRolesHistory() {
+        return userRolesHistoryViewRepository.findAll();
     }
 
     MessageDTO requestPasswordReset(String mail) {
