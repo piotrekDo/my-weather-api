@@ -56,8 +56,7 @@ public class AuthenticationService {
         try {
             authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalOperationException("Bad Credentials");
+            throw new IllegalOperationException("Wrong Credentials");
         }
 
 

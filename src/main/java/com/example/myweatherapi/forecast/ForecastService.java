@@ -1,5 +1,6 @@
 package com.example.myweatherapi.forecast;
 
+import com.example.myweatherapi.CustomContext;
 import com.example.myweatherapi.error.CityNotFoundException;
 import com.example.myweatherapi.geocode.GeoModel;
 import com.example.myweatherapi.geocode.GeoService;
@@ -16,11 +17,13 @@ public class ForecastService {
     private final GeoService geoService;
     private final OpenMeteoService openMeteoService;
     private final OpenMeteoUrlBuilder openMeteoUrlBuilder;
+    private final CustomContext customContext;
 
-    public ForecastService(GeoService geoService, OpenMeteoService openMeteoService, OpenMeteoUrlBuilder openMeteoUrlBuilder) {
+    public ForecastService(GeoService geoService, OpenMeteoService openMeteoService, OpenMeteoUrlBuilder openMeteoUrlBuilder, CustomContext customContext) {
         this.geoService = geoService;
         this.openMeteoService = openMeteoService;
         this.openMeteoUrlBuilder = openMeteoUrlBuilder;
+        this.customContext = customContext;
     }
 
     GeoModel getCoordinatesByCityName(String city) {
@@ -42,6 +45,7 @@ public class ForecastService {
     }
 
     OpenMeteoResponseDto getForecast(String city, String start, String end) {
+        System.out.println(customContext.getAppUser());
         GeoModel geo = getCoordinatesByCityName(city);
         double lat = Double.parseDouble(geo.getLat());
         double lon = Double.parseDouble(geo.getLon());

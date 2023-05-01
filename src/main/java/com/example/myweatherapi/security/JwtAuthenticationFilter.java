@@ -1,6 +1,7 @@
 package com.example.myweatherapi.security;
 
 
+import com.example.myweatherapi.CustomContext;
 import com.example.myweatherapi.app_user.AppUser;
 import com.example.myweatherapi.app_user.AppUserService;
 import com.example.myweatherapi.app_user.UserDetailsAdapter;
@@ -33,6 +34,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final AppUserService appUserService;
     private final EncryptionConfiguration encoder;
+    private final CustomContext customContext;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -77,6 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+                customContext.setAppUser(appUser);
             }
         }
         filterChain.doFilter(request, response);
