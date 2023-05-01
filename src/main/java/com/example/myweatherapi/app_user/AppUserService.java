@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -73,6 +74,7 @@ public class AppUserService implements UserDetailsService {
         return new MessageDTO("Token was sent to your mail.");
     }
 
+
     MessageDTO resetUserPassword(ResetPasswordDTO request) {
         AppUser appUser = appUserRepository.findByEmail(request.getMail()).orElseThrow(() ->
                 new NoSuchElementException("No user found with e-mail address " + request.getMail()));
@@ -93,6 +95,7 @@ public class AppUserService implements UserDetailsService {
         return new MessageDTO("Password was changed");
     }
 
+    @Transactional
      UserRoleChangeResponse promoteUser(UserRoleChangeRequest request) {
         AppUser appUser = appUserRepository.findByEmail(request.getUser()).orElseThrow(() ->
                 new NoSuchElementException("No user found with email address " + request.getUser()));
@@ -104,13 +107,14 @@ public class AppUserService implements UserDetailsService {
         if (alreadyContains) throw new IllegalOperationException(String.format("%s already has %s role", appUser.getEmail(), requestedRole.getRoleName()));
 
         appUser.getUserRoles().add(requestedRole);
-        appUserRepository.save(appUser);
+//        appUserRepository.save(appUser);
         return new UserRoleChangeResponse(
                 appUser.getEmail(),
                 getUserRoleNames(appUser.getUserRoles())
         );
     }
 
+    @Transactional
      UserRoleChangeResponse revokeUserRole(UserRoleChangeRequest request) {
         if (request.getRole().equalsIgnoreCase("user")) {
             throw new IllegalOperationException("User is the default role and cannot be revoked from any user.");
@@ -126,7 +130,7 @@ public class AppUserService implements UserDetailsService {
         if (!hasRole) throw new IllegalOperationException(String.format("User with email address %s doesn't have %s role", request.getUser(), requestedRole.getRoleName()));
 
         appUser.getUserRoles().remove(requestedRole);
-        appUserRepository.save(appUser);
+//        appUserRepository.save(appUser);
         return new UserRoleChangeResponse(
                 appUser.getEmail(),
                 getUserRoleNames(appUser.getUserRoles())

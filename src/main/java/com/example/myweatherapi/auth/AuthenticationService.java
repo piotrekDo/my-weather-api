@@ -11,7 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -36,7 +36,7 @@ public class AuthenticationService {
                 request.getLastName(),
                 request.getEmail(),
                 encryptionConfiguration.passwordEncoder().encode(request.getPassword()),
-                List.of(appUserService.getDefaultUserRole())
+                Set.of(appUserService.getDefaultUserRole())
         );
 
         AppUser savedUser = appUserRepository.save(newAppUser);

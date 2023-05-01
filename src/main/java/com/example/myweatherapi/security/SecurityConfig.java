@@ -31,9 +31,9 @@ public class SecurityConfig {
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
         );
         http.authorizeHttpRequests().requestMatchers("/auth/**").permitAll();
+        http.authorizeHttpRequests().requestMatchers("/user/admin/**").hasAuthority("ADMIN");
         http.authorizeHttpRequests().requestMatchers("/user/**").permitAll();
         http.authorizeHttpRequests().requestMatchers("/forecast/**").hasAuthority("USER");
-        http.authorizeHttpRequests().requestMatchers("/user/admin/**").hasAuthority("ADMIN");
 
 
         http.authorizeHttpRequests().anyRequest().authenticated();
