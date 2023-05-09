@@ -57,6 +57,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     HttpStatus.FORBIDDEN.value(),
                     e.getClass().getSimpleName(),
                     e.getMessage());
+            response.setStatus(403);
             response.setContentType(APPLICATION_JSON_VALUE);
             response.getWriter().write(new ObjectMapper().writeValueAsString(tokenExpiredError));
             return;

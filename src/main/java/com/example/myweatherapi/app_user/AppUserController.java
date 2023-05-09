@@ -18,8 +18,13 @@ public class AppUserController {
     }
 
     @PostMapping("/reset-password")
-    MessageDTO resetPassword(@RequestBody ResetPasswordDTO request){
+    MessageDTO resetPassword(@RequestBody ResetPasswordDTO request) {
         return appUserService.resetUserPassword(request);
+    }
+
+    @GetMapping("/admin/all-users")
+    List<AppUserDto> getAllUsers() {
+        return appUserService.getAllUsers();
     }
 
     @PostMapping("/admin/promote")
@@ -33,12 +38,12 @@ public class AppUserController {
     }
 
     @GetMapping("/admin/user-role-history")
-    List<UserRolesHistoryView> getUserRoleHistoryByEmail(@RequestParam String userMail){
+    List<UserRolesHistoryView> getUserRoleHistoryByEmail(@RequestParam String userMail) {
         return appUserService.getUserRolesHistoryByEmail(userMail);
     }
 
     @GetMapping("/admin/all-users-roles-history")
-    List<UserRolesHistoryView> getAllUsersRolesHistory(){
+    List<UserRolesHistoryView> getAllUsersRolesHistory() {
         return appUserService.getUsersRolesHistory();
     }
 }

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class AuthenticationResponse {
 
     private String firstName;
+    private String userMail;
     private String[] roles;
     private String token;
     private LocalDateTime tokenExpiresAt;

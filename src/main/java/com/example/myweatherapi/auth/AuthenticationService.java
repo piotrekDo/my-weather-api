@@ -45,6 +45,7 @@ public class AuthenticationService {
 
         return new AuthenticationResponse(
                 savedUser.getFirstName(),
+                savedUser.getEmail(),
                 appUserService.getUserRoleNames(savedUser.getUserRoles()),
                 token,
                 jwtService.getLocalDateTimeTokenExpiration(token)
@@ -66,6 +67,7 @@ public class AuthenticationService {
 //        appUserRepository.save(appUser);
         return new AuthenticationResponse(
                 appUser.getFirstName(),
+                appUser.getEmail(),
                 appUserService.getUserRoleNames(appUser.getUserRoles()),
                 token,
                 jwtService.getLocalDateTimeTokenExpiration(token)
